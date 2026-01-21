@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menu | King's Food</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <nav aria-label="Primary">
+    <a class="logo" href="index.html">KING'S <span>FOOD</span></a>
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu()">
+      <div></div><div></div><div></div>
+    </button>
+  </nav>
+
+  <aside class="menu-panel" aria-hidden="true">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="menu.html" class="active">Menu</a>
+    <a href="order.html">Order</a>
+  </aside>
+
+  <section class="section">
+    <h2 class="title">Our <span>Menu</span></h2>
+
+    <div class="menu-layout">
+      <div>
+        <div class="category">
+          <h3>KOTAS</h3>
+          <div class="item"><div>Chips,Full Russian,Polony</div><span onclick="addItem('Chips,Full Russian,Polony', 20)">R20</span></div>
+          <div class="item"><div>Chips,Cheese,Russian,Polony</div><span onclick="addItem('Chips,Cheese,Russian,Polony', 25)">R25</span></div>
+          <div class="item"><div>Chips,Egg,Cheese,Russian,Polony</div><span onclick="addItem('Chips,Egg,Cheese,Russian,Polony', 30)">R30</span></div>
+          <div class="item"><div>Chips,Egg,Cheese,Russian,Vienna,Polony</div><span onclick="addItem('Chips,Egg,Cheese,Russian,Vienna,Polony', 38)">R38</span></div>
+          <div class="item"><div>Chips,Egg,Cheese,Russian,Vienna,Petty,Polony</div><span onclick="addItem('Chips,Egg,Cheese,Russian,Vienna,Petty,Polony', 45)">R45</span></div>
+          <div class="item"><div>Kings Tower</div><span onclick="addItem('Kings Tower', 55)">R55</span></div>
+          <div class="item"><div>Kings Cruizer</div><span onclick="addItem('Kings Cruizer ', 100)">R100</span></div>
+        </div>
+
+          <div class="category">
+          <h3>DAGWOODS</h3>
+          <div class="item"><div>Lettuce,onion,tomato&beef patty</div><span onclick="addItem('Lettuce,onion,tomato&beef patty', 15)">R15</span></div>
+          <div class="item"><div>Lettuce,Onion,tomato,cheese&patty</div><span onclick="addItem('Lettuce,Onion,tomato,cheese&patty', 20)">R20</span></div>
+          <div class="item"><div>Lettuce,Onion,tomato,cheese,egg&patty</div><span onclick="addItem('Lettuce,Onion,tomato,cheese,egg&patty', 25)">R25</span></div>
+          <div class="item"><div>Lettuce,Onion,tomato,2cheese,egg&patty</div><span onclick="addItem('Lettuce,Onion,tomato,2cheese,egg&patty', 30)">R30</span></div>
+          <div class="item"><div>Lettuce,Onion,tomato,Vienna,egg,cheese&patty</div><span onclick="addItem('Lettuce,Onion,tomato,Vienna,egg,cheese&patty', 37)">R37</span></div>
+          <div class="item"><div>Lettuce,Onion,tomato,2patties,2egg,2cheese&russian</div><span onclick="addItem('Lettuce,Onion,tomato,2patties,2egg,2cheese&russian', 65)">R65</span></div>
+        </div>
+
+        <div class="category">
+          <h3>CHIPS & EXTRAS</h3>
+          <div class="item"><div>Small Chips</div><span onclick="addItem('Small Chips', 20)">R20</span></div>
+          <div class="item"><div>Medium Chips</div><span onclick="addItem('Medium Chips', 25)">R25</span></div>
+          <div class="item"><div>Large Chips</div><span onclick="addItem('Large Chips', 35)">R35</span></div>
+          <div class="item"><div>Family Pack</div><span onclick="addItem('Family Pack', 40)">R40</span></div>
+        </div>
+
+        <div class="cart" aria-live="polite">
+          <h3>Your Order</h3>
+          <ul id="cartList" class="cart-list"></ul>
+          <p class="cart-total">Total: R<span id="total">0</span></p>
+          <button class="btn" onclick="clearCart()">Clear Cart</button>
+          <a class="btn secondary" href="order.html">Proceed to Order</a>
+        </div>
+      </div>
+
+      <div class="ads">
+        <img src="wraps.jpeg" alt="Special offer 1">
+        <img src="jj.jpg" alt="Special offer 2">
+        <img src="45.jpg" alt="Special offer 3">
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 King’s Food • Palmridge, Katlehong</p>
+  </footer>
+</body>
+</html>

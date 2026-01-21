@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>About | King's Food</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <nav aria-label="Primary">
+    <a class="logo" href="index.html">KING'S <span>FOOD</span></a>
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu()">
+      <div></div><div></div><div></div>
+    </button>
+  </nav>
+
+  <aside class="menu-panel" aria-hidden="true">
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="menu.html">Menu</a>
+    <a href="order.html">Order</a>
+  </aside>
+
+  <section class="section about-grid">
+    <div>
+      <h2 class="title">About <span>King's Food</span></h2>
+      <p>
+        King’s Food is a premium kasi kitchen rooted in Palmridge, Katlehong.  
+        We craft kotas, dagwoods, wraps, and grills that celebrate authentic township flavor—refined with modern elegance.  
+        Our vision is simple: serve kasi royalty with food that feels familiar yet elevated.
+      </p>
+
+      <div class="socials">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+
+    <div>
+      <iframe
+        src="https://maps.google.com/maps?q=Palmridge%20Katlehong&t=&z=13&ie=UTF8&iwloc=&output=embed"
+        width="100%" height="300" title="Palmridge Katlehong Map" class="map-frame">
+      </iframe>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 King’s Food • Palmridge, Katlehong</p>
+  </footer>
+</body>
+</html>
