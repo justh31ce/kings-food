@@ -1,162 +1,152 @@
 /* ================= MENU TOGGLE ================= */
-function toggleMenu(){
+function toggleMenu() {
   const panel = document.querySelector('.menu-panel');
   const btn = document.querySelector('.hamburger');
   const isActive = panel.classList.toggle('active');
-  panel.setAttribute('aria-hidden', !isActive);
-  if(btn) btn.setAttribute('aria-expanded', isActive);
 }
 
 /* ================= CART ================= */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function addItem(name, price){
-  cart.push({name, price: Number(price)});
+function addItem(name, price) {
+  cart.push({ name, price: Number(price) });
   saveCart();
   flashAdded();
 }
 
-function removeItem(index){
+function removeItem(index) {
   cart.splice(index, 1);
   saveCart();
 }
 
-function clearCart(){
+function clearCart() {
   cart = [];
   saveCart();
 }
 
-function saveCart(){
+function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
   renderCartOnOrder();
-  updateDeliveryFee(); // keep totals fresh
+  updateDeliveryFee();
 }
 
-function cartTotalRaw(){
+function cartTotalRaw() {
   return cart.reduce((sum, item) => sum + item.price, 0);
 }
-function cartTotal(){
+
+function cartTotal() {
   return cartTotalRaw().toFixed(2);
 }
 
-function renderCart(){
+function renderCart() {
   const list = document.getElementById("cartList");
   const total = document.getElementById("total");
-  if(!list || !total) return;
+  if (!list || !total) return;
 
   list.innerHTML = "";
   cart.forEach((item, i) => {
     list.innerHTML += `
       <li>
         <span>${item.name} — R${item.price.toFixed(2)}</span>
-        <button onclick="removeItem(${i})" aria-label="Remove ${item.name}">CANCEL</button>
+        <button onclick="removeItem(${i})">CANCEL</button>
       </li>`;
   });
   total.innerText = cartTotal();
 }
 
-function renderCartOnOrder(){
+function renderCartOnOrder() {
   const list = document.getElementById("cartListOrder");
-  const total = document.getElementById("totalOrder");
-  if(!list || !total) return;
+  if (!list) return;
 
   list.innerHTML = "";
-  cart.forEach((item, i) => {
-    list.innerHTML += `
-      <li>
-        <span>${item.name} — R${item.price.toFixed(2)}</span>
-        <button onclick="removeItem(${i})" aria-label="Remove ${item.name}">CANCEL</button>
-      </li>`;
+  cart.forEach((item) => {
+    list.innerHTML += `<li>${item.name} — R${item.price.toFixed(2)}</li>`;
   });
-  total.innerText = cartTotal();
-  updateDeliveryFee(); // recalc grand total
 }
 
-function flashAdded(){
-  const nav = document.querySelector('nav');
-  if(!nav) return;
-  nav.style.boxShadow = '0 0 12px rgba(212,175,55,0.6)';
-  setTimeout(()=>{ nav.style.boxShadow = 'none'; }, 400);
-}
+/* ================= TOAST ================= */
+function flashAdded() {
+  const toast = document.createElement("div");
+  toast.innerText = "Added to cart";
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.left = "50%";
+  toast.style.transform = "translateX(-50%)";
+  toast.style.background = "#d4af37";
+  toast.style.padding = "10px 20px";
+  toast.style.color = "#000";
+  toast.style.borderRadius = "6px";
+  toast.style.fontWeight = "600";
+  toast.style.zIndex = "9999";
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderCart();
-  renderCartOnOrder();
-});
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1500);
+}
 
 /* ================= ORDER ================= */
-function handleOrderType(){
+function handleOrderType() {
   const type = document.getElementById("orderType").value;
-  const address = document.getElementById("address");
-  const area = document.getElementById("area");
-  if(address) address.style.display = type === "Delivery" ? "block" : "none";
-  if(area) area.style.display = type === "Delivery" ? "block" : "none";
+  document.getElementById("address").style.display = type === "Delivery" ? "block" : "none";
+  document.getElementById("area").style.display = type === "Delivery" ? "block" : "none";
 }
 
-/* Delivery fee by area:
-   Eden Park = R10
-   Katlehong = R15
-   Thokoza = R15
-   Other (e.g., Alberton) = R50
-*/
-function getDeliveryFee(){
-  const orderTypeInput = document.getElementById("orderType");
-  const areaInput = document.getElementById("area");
-  if(!orderTypeInput || orderTypeInput.value !== "Delivery") return 0;
+function getDeliveryFee() {
+  const type = document.getElementById("orderType");
+  const area = document.getElementById("area");
+  if (!type || type.value !== "Delivery") return 0;
 
-  const area = areaInput ? areaInput.value : "";
-  switch(area){
+  switch (area.value) {
     case "Eden Park": return 10;
     case "Katlehong": return 15;
     case "Thokoza": return 15;
     case "Other": return 50;
-    default: return 0; // no area selected yet
+    default: return 0;
   }
 }
 
-function updateDeliveryFee(){
+function updateDeliveryFee() {
   const itemsTotalEl = document.getElementById("totalOrder");
   const deliveryFeeEl = document.getElementById("deliveryFee");
   const grandTotalEl = document.getElementById("grandTotal");
-  if(!itemsTotalEl || !deliveryFeeEl || !grandTotalEl) return;
+  if (!itemsTotalEl) return;
 
   const itemsTotal = cartTotalRaw();
   const fee = getDeliveryFee();
   const grand = itemsTotal + fee;
 
-  itemsTotalEl.innerText = itemsTotal.toFixed(2);
-  deliveryFeeEl.innerText = fee.toFixed(2);
-  grandTotalEl.innerText = grand.toFixed(2);
+  if (itemsTotalEl) itemsTotalEl.innerText = itemsTotal.toFixed(2);
+  if (deliveryFeeEl) deliveryFeeEl.innerText = fee.toFixed(2);
+  if (grandTotalEl) grandTotalEl.innerText = grand.toFixed(2);
 }
 
-function sendOrder(){
+function sendOrder() {
+  if (cart.length === 0) {
+    alert("Please select food from the menu.");
+    return;
+  }
+
   const nameInput = document.getElementById("name");
   const phoneInput = document.getElementById("phone");
   const orderTypeInput = document.getElementById("orderType");
   const addressInput = document.getElementById("address");
   const areaInput = document.getElementById("area");
+  const whatsappNumber = document.getElementById("whatsappNumber").value;
 
-  if(cart.length === 0){
-    alert("Please select food from the menu.");
+  if (!nameInput.value.trim() || !phoneInput.value.trim()) {
+    alert("Please enter name and phone number.");
     return;
   }
-  if(!nameInput.value.trim() || !phoneInput.value.trim()){
-    alert("Please fill in your name and phone number.");
-    return;
-  }
+
   const phoneValid = /^[0-9+\s-]{8,}$/.test(phoneInput.value.trim());
-  if(!phoneValid){
+  if (!phoneValid) {
     alert("Please enter a valid phone number.");
     return;
   }
-  if(orderTypeInput.value === "Delivery"){
-    if(!areaInput.value){
-      alert("Please select your delivery area.");
-      return;
-    }
-    if(!addressInput.value.trim()){
-      alert("Please provide a delivery address.");
+
+  if (orderTypeInput.value === "Delivery") {
+    if (!areaInput.value || !addressInput.value.trim()) {
+      alert("Please fill delivery area and address.");
       return;
     }
   }
@@ -165,24 +155,22 @@ function sendOrder(){
   const itemsTotal = cartTotalRaw();
   const grand = itemsTotal + fee;
 
-  let msg = "KINGS FOOD ORDER\n\n";
-  msg += `Name: ${nameInput.value.trim()}\nPhone: ${phoneInput.value.trim()}\n`;
-  msg += `Order Type: ${orderTypeInput.value}\n`;
-  if(orderTypeInput.value === "Delivery"){
-    msg += `Area: ${areaInput.value}\n`;
-    msg += `Address: ${addressInput.value.trim()}\n`;
+  let msg = "KING'S FOOD ORDER\n\n";
+  msg += `Name: ${nameInput.value.trim()}\nPhone: ${phoneInput.value.trim()}\nOrder Type: ${orderTypeInput.value}\n`;
+  if (orderTypeInput.value === "Delivery") {
+    msg += `Area: ${areaInput.value}\nAddress: ${addressInput.value.trim()}\n`;
   }
-  msg += `\nItems:\n`;
+  msg += "\nItems:\n";
   cart.forEach(i => msg += `• ${i.name} — R${i.price.toFixed(2)}\n`);
-  msg += `\nItems Total: R${itemsTotal.toFixed(2)}`;
-  msg += `\nDelivery Fee: R${fee.toFixed(2)}`;
-  msg += `\nGrand Total: R${grand.toFixed(2)}`;
-
-  const confirmSend = confirm("Send order to WhatsApp?");
-  if(!confirmSend) return;
+  msg += `\nItems Total: R${itemsTotal.toFixed(2)}\nDelivery Fee: R${fee.toFixed(2)}\nGrand Total: R${grand.toFixed(2)}`;
 
   window.open(
-    "https://wa.me/27814963608?text=" + encodeURIComponent(msg),
+    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,
     "_blank"
   );
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderCart();
+  renderCartOnOrder();
+});
