@@ -3,7 +3,36 @@ function toggleMenu() {
   const panel = document.querySelector('.menu-panel');
   const btn = document.querySelector('.hamburger');
   const isActive = panel.classList.toggle('active');
+
+  // Update accessibility attributes
+  if (btn) btn.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+  if (panel) panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+
+  // If opened, focus first link for keyboard users
+  if (isActive) {
+    const firstLink = panel.querySelector('a');
+    if (firstLink) firstLink.focus();
+  }
 }
+
+// Close menu on Escape or click outside
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const panel = document.querySelector('.menu-panel');
+    if (panel && panel.classList.contains('active')) toggleMenu();
+  }
+});
+
+document.addEventListener('click', (e) => {
+  const panel = document.querySelector('.menu-panel');
+  const btn = document.querySelector('.hamburger');
+  if (!panel || !panel.classList.contains('active')) return;
+
+  // If click is outside panel and not on the hamburger, close
+  if (!panel.contains(e.target) && !btn.contains(e.target)) {
+    toggleMenu();
+  }
+});
 
 /* ================= CART ================= */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -49,7 +78,7 @@ function renderCart() {
     list.innerHTML += `
       <li>
         <span>${item.name} — R${item.price.toFixed(2)}</span>
-        <button onclick="removeItem(${i})">CANCEL</button>
+        <button onclick="removeItem(${i})" aria-label="Remove ${item.name}">CANCEL</button>
       </li>`;
   });
   total.innerText = cartTotal();
@@ -87,14 +116,20 @@ function flashAdded() {
 /* ================= ORDER ================= */
 function handleOrderType() {
   const type = document.getElementById("orderType").value;
-  document.getElementById("address").style.display = type === "Delivery" ? "block" : "none";
-  document.getElementById("area").style.display = type === "Delivery" ? "block" : "none";
+  const addressEl = document.getElementById("address");
+  const areaEl = document.getElementById("area");
+
+  if (addressEl) addressEl.style.display = type === "Delivery" ? "block" : "none";
+  if (areaEl) areaEl.style.display = type === "Delivery" ? "block" : "none";
+
+  updateDeliveryFee();
 }
 
 function getDeliveryFee() {
-  const type = document.getElementById("orderType");
+  const typeEl = document.getElementById("orderType");
   const area = document.getElementById("area");
-  if (!type || type.value !== "Delivery") return 0;
+  if (!typeEl || typeEl.value !== "Delivery") return 0;
+  if (!area) return 0;
 
   switch (area.value) {
     case "Eden Park": return 10;
@@ -115,7 +150,7 @@ function updateDeliveryFee() {
   const fee = getDeliveryFee();
   const grand = itemsTotal + fee;
 
-  if (itemsTotalEl) itemsTotalEl.innerText = itemsTotal.toFixed(2);
+  itemsTotalEl.innerText = itemsTotal.toFixed(2);
   if (deliveryFeeEl) deliveryFeeEl.innerText = fee.toFixed(2);
   if (grandTotalEl) grandTotalEl.innerText = grand.toFixed(2);
 }
@@ -131,7 +166,10 @@ function sendOrder() {
   const orderTypeInput = document.getElementById("orderType");
   const addressInput = document.getElementById("address");
   const areaInput = document.getElementById("area");
-  const whatsappNumber = document.getElementById("whatsappNumber").value;
+
+  // Get whatsapp number from input if present, otherwise use default business number
+  const whatsappInput = document.getElementById("whatsappNumber");
+  const whatsappNumber = whatsappInput && whatsappInput.value.trim() ? whatsappInput.value.trim() : "27831234567";
 
   if (!nameInput.value.trim() || !phoneInput.value.trim()) {
     alert("Please enter name and phone number.");
@@ -170,7 +208,11 @@ function sendOrder() {
   );
 }
 
+/* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", () => {
   renderCart();
   renderCartOnOrder();
+  handleOrderType(); // set initial visibility for address/area
+  updateDeliveryFee();
 });
+
