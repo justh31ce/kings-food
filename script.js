@@ -169,7 +169,7 @@ function sendOrder() {
 
   // Get whatsapp number from input if present, otherwise use default business number
   const whatsappInput = document.getElementById("whatsappNumber");
-  const whatsappNumber = whatsappInput && whatsappInput.value.trim() ? whatsappInput.value.trim() : "27831234567";
+  const whatsappNumber = whatsappInput && whatsappInput.value.trim() ? whatsappInput.value.trim() : "27682357221";
 
   if (!nameInput.value.trim() || !phoneInput.value.trim()) {
     alert("Please enter name and phone number.");
